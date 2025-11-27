@@ -26,6 +26,8 @@ npm install recharts
 npm install react-hot-toast
 # Icons (extra)
 npm install lucide-react
+# File Upload (drag & drop)
+npm install react-dropzone
 
 #than tailwind.config.js file to modifay in this form
 // tailwind.config.js
@@ -39,5 +41,4 @@ module.exports = {
 }
 
 
-# File Upload (drag & drop)
-npm install react-dropzone
+
