@@ -19,12 +19,12 @@ export default function OrderDetail() {
   // Fake order data
   const order = {
     id: id || "ORD12345",
-    customer: "Sharma Retail Store",
-    phone: "+91 98765 43210",
-    address: "123 Main Market, Near Bus Stand, Hisar, Haryana - 125001",
+    customer: "Mulualem Retail Store",
+    phone: "+251 912345678",
+    address: "Burayu Main Market, Near New brige, Burayu, Sheger ",
     items: [
       {
-        name: "Basmati Rice 1121",
+        name: "Local Rice 1121",
         qty: 500,
         unit: "kg",
         price: 58,
@@ -58,9 +58,9 @@ export default function OrderDetail() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-3 hover:bg-green-600 px-4 py-3 rounded-lg"
+            className="flex items-center gap-3 bg-green-500 hover:bg-green-600 px-4 py-3 rounded-lg"
           >
-            ← <span className="text-xl font-bold">Order {order.id}</span>
+            <span className="text-xl font-bold">Order {order.id}</span>
           </button>
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function OrderDetail() {
         {/* Left: Order Items + Summary */}
         <div className="lg:col-span-2 space-y-6">
           {/* Items */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white rounded-2xl text-black shadow-xl p-8">
             <h2 className="text-2xl font-bold mb-6">Order Items</h2>
             {order.items.map((item, i) => (
               <div
@@ -84,9 +84,9 @@ export default function OrderDetail() {
                 </div>
                 <div className="text-right">
                   <p className="text-xl font-bold text-green-700">
-                    ₹{item.total.toLocaleString()}
+                    {item.total.toLocaleString()}ETB
                   </p>
-                  <p className="text-sm text-gray-500">₹{item.price}/kg</p>
+                  <p className="text-sm text-gray-500">{item.price}/kg </p>
                 </div>
               </div>
             ))}
@@ -94,22 +94,24 @@ export default function OrderDetail() {
             <div className="mt-8 pt-6 border-t-2 border-dashed">
               <div className="flex justify-between text-lg">
                 <span>Subtotal</span>
-                <span>₹{order.subtotal.toLocaleString()}</span>
+                <span>{order.subtotal.toLocaleString()}ETB</span>
               </div>
               <div className="flex justify-between text-lg">
                 <span>Delivery Charge</span>
-                <span>₹{order.deliveryCharge}</span>
+                <span>{order.deliveryCharge}ETB</span>
               </div>
               <div className="flex justify-between text-2xl font-bold text-green-700 mt-4">
                 <span>Total Amount</span>
-                <span>₹{order.total.toLocaleString()}</span>
+                <span>{order.total.toLocaleString()}ETB</span>
               </div>
             </div>
           </div>
 
           {/* Status Timeline */}
           <div className="bg-white rounded-2xl shadow-xl p-8">
-            <h2 className="text-2xl font-bold mb-6">Update Order Status</h2>
+            <h2 className="text-2xl text-black font-bold mb-6">
+              Update Order Status
+            </h2>
             <div className="flex flex-col gap-4">
               {statusSteps.map((step, index) => {
                 const Icon = step.icon;
@@ -138,7 +140,7 @@ export default function OrderDetail() {
                       step.value !== status && (
                         <button
                           onClick={() => updateStatus(step.value)}
-                          className="btn btn-success btn-sm text-white"
+                          className="btn bg-green-700 btn-md text-white"
                         >
                           Mark as {step.label}
                         </button>
@@ -153,7 +155,7 @@ export default function OrderDetail() {
         {/* Right: Customer & Delivery Info */}
         <div className="space-y-6">
           {/* Customer Card */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white rounded-2xl text-black shadow-xl p-8">
             <h3 className="text-xl font-bold flex items-center gap-3 mb-4">
               <User size={28} /> Customer Details
             </h3>
@@ -166,21 +168,21 @@ export default function OrderDetail() {
               <span>{order.address}</span>
             </p>
             <div className="mt-6 flex gap-3">
-              <button className="flex-1 btn btn-success text-white flex items-center justify-center gap-2">
+              <button className="flex-1 btn bg-blue-600  text-white flex items-center justify-center gap-2">
                 <Phone size={18} /> Call
               </button>
-              <button className="flex-1 btn btn-outline btn-success">
+              <button className="flex-1 btn btn-outline text-white bg-green-600">
                 WhatsApp
               </button>
             </div>
           </div>
 
           {/* Order Info */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white text-black rounded-2xl shadow-xl p-8">
             <h3 className="text-xl font-bold mb-4">Order Info</h3>
-            <p className="text-gray-600">Order placed</p>
+            <p className="">Order placed</p>
             <p className="font-bold">{order.orderDate}</p>
-            <p className="text-gray-600 mt-4">Payment</p>
+            <p className=" mt-4">Payment</p>
             <p className="font-bold text-green-600">Paid (UPI)</p>
           </div>
         </div>

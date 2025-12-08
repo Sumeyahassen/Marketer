@@ -10,7 +10,7 @@ export default function Inventory() {
   const [inventory, setInventory] = useState([
     {
       id: 1,
-      name: "Basmati Rice 1121",
+      name: "Local Rice ",
       boughtQty: 500,
       soldQty: 180,
       remaining: 320,
@@ -32,7 +32,7 @@ export default function Inventory() {
     },
     {
       id: 3,
-      name: "Wheat (Lokwan)",
+      name: "Wheat ",
       boughtQty: 2000,
       soldQty: 800,
       remaining: 1200,
@@ -64,13 +64,21 @@ export default function Inventory() {
       {/* Top Bar */}
       <div className="bg-green-700 text-white py-5 px-8 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-3xl font-bold">My Stock / Inventory</h1>
-          <button
-            onClick={() => navigate("/stock/add")}
-            className="btn btn-orange btn-lg text-white flex items-center gap-2"
-          >
-            <Plus size={24} /> Add New Product
-          </button>
+          <h1 className="text-3xl font-bold">My Stock ( Inventory)</h1>
+          <div className="flex gap-10">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="btn bg-green-500 btn-lg text-white flex items-center gap-2 hover:bg-green-600"
+            >
+              <Plus size={24} /> Add New Product
+            </button>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="btn bg-green-600 text-white hover:bg-green-700 w-full md:w-48 font-semibold"
+            >
+              Back
+            </button>
+          </div>
         </div>
       </div>
 
@@ -82,7 +90,7 @@ export default function Inventory() {
               <div>
                 <p className="text-gray-500">Total Stock Value</p>
                 <p className="text-4xl font-bold text-green-700">
-                  ₹{totalStockValue.toLocaleString()}
+                  {totalStockValue.toLocaleString()}ETB
                 </p>
               </div>
               <Package className="text-green-600" size={48} />
@@ -90,7 +98,9 @@ export default function Inventory() {
           </div>
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <p className="text-gray-500">Total Products</p>
-            <p className="text-4xl font-bold">{inventory.length}</p>
+            <p className="text-4xl font-bold text-gray-600">
+              {inventory.length}
+            </p>
           </div>
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <p className="text-gray-500">Low Stock Items</p>
@@ -134,27 +144,32 @@ export default function Inventory() {
                     item.name.toLowerCase().includes(search.toLowerCase())
                   )
                   .map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50 text-lg">
-                      <td className="font-bold">{item.name}</td>
-                      <td>
+                    <tr
+                      key={item.id}
+                      className="hover:bg-gray-50 bg-gray-100 text-lg"
+                    >
+                      <td className="font-bold text-black">{item.name}</td>
+                      <td className="text-gray-700">
                         {item.boughtQty} {item.unit}
                       </td>
-                      <td>
+                      <td className="text-gray-700">
                         {item.soldQty} {item.unit}
                       </td>
                       <td
                         className={
-                          item.remaining < 100 ? "text-red-600 font-bold" : ""
+                          item.remaining < 100
+                            ? "text-red-600 font-bold"
+                            : "text-green-600 font-bold"
                         }
                       >
                         {item.remaining} {item.unit}
                       </td>
-                      <td>₹{item.buyPrice}</td>
+                      <td className="text-gray-700">{item.buyPrice}ETB</td>
                       <td className="font-bold text-green-700">
-                        ₹{item.sellPrice}
+                        {item.sellPrice}ETB
                       </td>
-                      <td className="text-orange-600 font-bold">
-                        ₹{item.profit} (+
+                      <td className="text-gray-700 font-bold">
+                        {item.profit}ETB (+
                         {Math.round((item.profit / item.buyPrice) * 100)}%)
                       </td>
                       <td>

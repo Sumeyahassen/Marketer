@@ -19,7 +19,7 @@ export default function Orders() {
   const [orders, setOrders] = useState([
     {
       id: "ORD12345",
-      customer: "Sharma Retail",
+      customer: "Mulualem Retail",
       items: "500 kg Rice",
       total: 29000,
       status: "Pending",
@@ -27,7 +27,7 @@ export default function Orders() {
     },
     {
       id: "ORD12346",
-      customer: "Gupta Stores",
+      customer: "Kebede Stores",
       items: "200 kg Tomatoes",
       total: 9600,
       status: "Packed",
@@ -35,7 +35,7 @@ export default function Orders() {
     },
     {
       id: "ORD12347",
-      customer: "Singh Traders",
+      customer: "Medrok Traders",
       items: "1000 kg Wheat",
       total: 28000,
       status: "Out for Delivery",
@@ -43,7 +43,7 @@ export default function Orders() {
     },
     {
       id: "ORD12348",
-      customer: "Verma Shop",
+      customer: "Ayana Shop",
       items: "300 kg Potatoes",
       total: 12000,
       status: "Delivered",
@@ -113,7 +113,7 @@ export default function Orders() {
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-xl font-bold">{order.id}</h3>
+                    <h3 className="text-xl font-bold text-black">{order.id}</h3>
                     <p className="text-gray-600">{order.customer}</p>
                   </div>
                   <span
@@ -134,7 +134,7 @@ export default function Orders() {
                 <div className="mt-4">
                   <p className="text-gray-700">{order.items}</p>
                   <p className="text-xl font-bold text-green-700 mt-1">
-                    ₹{order.total.toLocaleString()}
+                    {order.total.toLocaleString()}ETB
                   </p>
                   <p className="text-sm text-gray-500">{order.date}</p>
                 </div>
@@ -144,7 +144,7 @@ export default function Orders() {
                   {order.status === "Pending" && (
                     <button
                       onClick={() => updateStatus(order.id, "Packed")}
-                      className="flex-1 btn btn-yellow btn-sm text-white flex items-center justify-center gap-2"
+                      className="flex-1 btn bg-yellow-600 btn-sm text-white flex items-center justify-center gap-2"
                     >
                       <PackageCheck size={16} /> Pack Now
                     </button>
@@ -152,7 +152,7 @@ export default function Orders() {
                   {order.status === "Packed" && (
                     <button
                       onClick={() => updateStatus(order.id, "Out for Delivery")}
-                      className="flex-1 btn btn-blue btn-sm text-white flex items-center justify-center gap-2"
+                      className="flex-1 btn bg-blue-600 btn-sm text-white flex items-center justify-center gap-2"
                     >
                       <Truck size={16} /> Ship Now
                     </button>
@@ -160,14 +160,14 @@ export default function Orders() {
                   {order.status === "Out for Delivery" && (
                     <button
                       onClick={() => updateStatus(order.id, "Delivered")}
-                      className="flex-1 btn btn-green btn-sm text-white flex items-center justify-center gap-2"
+                      className="flex-1 btn bg-green-600 btn-sm text-white flex items-center justify-center gap-2"
                     >
                       <CheckCircle size={16} /> Mark Delivered
                     </button>
                   )}
                   <button
                     onClick={() => navigate(`/order/${order.id}`)}
-                    className="flex-1 btn btn-outline btn-sm"
+                    className="flex-1 btn btn-outline btn-sm bg-green-400"
                   >
                     View Details
                   </button>

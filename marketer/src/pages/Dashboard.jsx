@@ -8,22 +8,23 @@ import {
   TrendingUp,
   Bell,
 } from "lucide-react";
+import Logo from "../assets/logo.png"
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
   // Fake data – replace with real API later
   const stats = {
-    stockValue: "₹12,45,890",
-    todaySales: "₹45,678",
+    stockValue: "12,45,890 ETB",
+    todaySales: "45,678 ETB",
     pendingOrders: 12,
-    walletBalance: "₹45,890",
+    walletBalance: "45,890 ETB",
   };
 
   const recentActivity = [
     {
       id: 1,
-      text: "New order received from Sharma Retail",
+      text: "New order received from  Retail",
       time: "2 hours ago",
       type: "order",
     },
@@ -35,7 +36,7 @@ export default function Dashboard() {
     },
     {
       id: 3,
-      text: "Payment received ₹15,000",
+      text: "Payment received 15,000 ETB",
       time: "5 hours ago",
       type: "payment",
     },
@@ -56,14 +57,14 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Bar */}
-      <div className="bg-green-700 text-white py-4 px-8 shadow-lg">
+      <div className="bg-green-500 text-white py-4 px-8 shadow-lg">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-2xl">
-              🌱
+              <img src={Logo} alt="logo" className="rounded-full " />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">Hello Ramesh Marketer 👋</h1>
+              <h1 className="text-2xl font-bold">Hello Mulalem Marketer 👋</h1>
               <p className="text-green-100">
                 Welcome back! Here's your today's summary
               </p>
@@ -144,28 +145,28 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
           <button
             onClick={() => navigate("/buy")}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 rounded-2xl shadow-lg flex flex-col items-center gap-2 transition"
+            className="bg-green-300 hover:bg-green-400 text-white font-bold py-6 rounded-2xl shadow-lg flex flex-col items-center gap-2 transition"
           >
             <Leaf size={36} />
             <span className="text-lg">Buy from Agents</span>
           </button>
           <button
             onClick={() => navigate("/stock")}
-            className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-6 rounded-2xl shadow-lg flex flex-col items-center gap-2 transition"
+            className="bg-lime-400 hover:bg-lime-500 text-white font-bold py-6 rounded-2xl shadow-lg flex flex-col items-center gap-2 transition"
           >
             <Package size={36} />
             <span className="text-lg">Add Stock</span>
           </button>
           <button
             onClick={() => navigate("/orders")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 rounded-2xl shadow-lg flex flex-col items-center gap-2 transition"
+            className="bg-emerald-200 hover:bg-emerald-300 text-white font-bold py-6 rounded-2xl shadow-lg flex flex-col items-center gap-2 transition"
           >
             <ShoppingCart size={36} />
             <span className="text-lg">View Orders</span>
           </button>
           <button
             onClick={() => navigate("/reports")}
-            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-6 rounded-2xl shadow-lg flex flex-col items-center gap-2 transition"
+            className="bg-teal-300 hover:bg-teal-400 text-white font-bold py-6 rounded-2xl shadow-lg flex flex-col items-center gap-2 transition"
           >
             <TrendingUp size={36} />
             <span className="text-lg">Reports</span>
@@ -174,7 +175,7 @@ export default function Dashboard() {
 
         {/* Recent Activity */}
         <div className="bg-gray-200 rounded-2xl shadow-lg p-6">
-          <h2 className="text-2xl text-gray-600 font-bold mb-4">
+          <h2 className="text-2xl text-gray-900 font-bold mb-4">
             Recent Activity
           </h2>
           <div className="space-y-4">
@@ -187,12 +188,12 @@ export default function Dashboard() {
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       item.type === "order"
-                        ? "bg-green-100 text-green-600"
+                        ? "bg-gray-100 text-gray-900"
                         : item.type === "stock"
-                        ? "bg-blue-100 text-blue-600"
+                        ? "bg-gray-100 text-black"
                         : item.type === "payment"
-                        ? "bg-yellow-100 text-yellow-600"
-                        : "bg-purple-100 text-purple-600"
+                        ? "bg-gray-100 text-black"
+                        : "bg-gray-100 text-black"
                     }`}
                   >
                     {item.type === "order" ? (
@@ -206,7 +207,19 @@ export default function Dashboard() {
                     )}
                   </div>
                   <div>
-                    <p className="font-medium">{item.text}</p>
+                    <p
+                      className={`font-medium ${
+                        item.type === "order"
+                          ? "text-black"
+                          : item.type === "stock"
+                          ? "text-green-600"
+                          : item.type === "payment"
+                          ? "text-blue-600"
+                          : "text-gray-900"
+                      }`}
+                    >
+                      {item.text}
+                    </p>
                     <p className="text-sm text-gray-500">{item.time}</p>
                   </div>
                 </div>

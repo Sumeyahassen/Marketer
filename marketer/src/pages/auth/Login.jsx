@@ -43,7 +43,7 @@ export default function Login() {
       localStorage.setItem("token", "fake-jwt-token-123");
       localStorage.setItem(
         "user",
-        JSON.stringify({ name: "Ramesh Marketer", phone })
+        JSON.stringify({ name: "Mulalem Marketer", phone })
       );
       toast.success("Login Successful! Welcome back 👋");
       setTimeout(() => navigate("/dashboard"), 1000);
@@ -63,11 +63,11 @@ export default function Login() {
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-10 text-center">
-            <div className="w-24 h-24 bg-white rounded-full mx-auto mb-4 flex items-center justify-center text-6xl shadow-lg">
-              Plant
+          <div className=" cursor-move bg-gradient-to-r from-green-600 to-emerald-600 text-white p-10 text-center">
+            <div className="w-30 h-24 mx-auto mb-4 flex items-center justify-center text-6xl shadow-lg">
+              Agri Prodact
             </div>
-            <h1 className="text-4xl font-bold mt-4">Majet Agri</h1>
+            <h1 className="text-4xl font-bold mt-4">Majet </h1>
             <p className="text-green-100 text-lg mt-2">Marketer Portal</p>
           </div>
 
@@ -85,8 +85,8 @@ export default function Login() {
                     onChange={(e) =>
                       setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
                     }
-                    placeholder="98765 43210"
-                    className="input input-bordered input-lg w-full mt-3 text-xl font-mono tracking-wider bg-gray-300 placeholder:text-gray-900 placeholder:pl-10"
+                    placeholder="  98765 43210"
+                    className=" pl-10 input input-bordered input-lg w-full mt-3 text-xl text-black font-mono tracking-wider bg-gray-300 placeholder:text-gray-900 placeholder:pl-10"
                     maxLength="10"
                     autoFocus
                   />
@@ -95,7 +95,7 @@ export default function Login() {
                 <button
                   onClick={sendOtp}
                   disabled={loading || phone.length !== 10}
-                  className="btn btn-success btn-lg w-full text-gray-800 text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition"
+                  className="btn btn-success btn-lg w-full text-gray-800 text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition bg-green-600 hover:bg-green-700"
                 >
                   {loading ? (
                     <>
@@ -114,7 +114,7 @@ export default function Login() {
               <div className="space-y-6 animate-fadeIn">
                 <div>
                   <label className="text-lg font-semibold text-gray-700">
-                    Enter OTP sent to +91 {phone}
+                    Enter OTP sent to +251 {phone}
                   </label>
                   <input
                     type="text"
@@ -136,7 +136,7 @@ export default function Login() {
                 <button
                   onClick={verifyOtp}
                   disabled={otp.length !== 6}
-                  className="btn btn-success btn-lg w-full text-gray-800 text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition"
+                  className="btn  btn-lg w-full text-gray-800 text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition bg-green-600 hover:bg-green-700"
                 >
                   Verify & Login
                 </button>
@@ -166,8 +166,13 @@ export default function Login() {
 
             <p className="text-center text-xs text-gray-500 mt-10">
               By logging in, you agree to our{" "}
-              <span className="text-green-600 underline">Terms</span> &{" "}
-              <span className="text-green-600 underline">Privacy Policy</span>
+              <span className="text-green-600 underline cursor-pointer">
+                Terms
+              </span>{" "}
+              &{" "}
+              <span className="text-green-600 underline cursor-pointer">
+                Privacy Policy
+              </span>
             </p>
           </div>
         </div>
