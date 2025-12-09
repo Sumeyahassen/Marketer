@@ -4,11 +4,11 @@ export default function Reports() {
   const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gray-50 p-8 text-black">
-      <div className="bg-green-700 text-white py-5 px-8 rounded-2xl mb-8 flex justify-between">
+      <div className="bg-green-500 text-white py-5 px-8 rounded-2xl mb-8 flex justify-between">
         <h1 className="text-3xl font-bold">Reports & Analytics</h1>
         <button
           onClick={() => navigate("/dashboard")}
-          className="btn bg-green-600 text-white hover:bg-green-700 w-full md:w-48 font-semibold"
+          className="btn bg-green-400 text-white hover:bg-green-500 w-full md:w-48 font-semibold"
         >
           Back
         </button>

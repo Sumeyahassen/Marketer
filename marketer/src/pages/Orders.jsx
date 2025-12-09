@@ -69,7 +69,7 @@ export default function Orders() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Bar */}
-      <div className="bg-green-700 text-white py-5 px-8 shadow-lg">
+      <div className="bg-green-500 text-white py-5 px-8 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-3xl font-bold">Sell / My Orders</h1>
           <div className="flex gap-4">
@@ -80,13 +80,13 @@ export default function Orders() {
                 placeholder="Search by customer..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-green-600 border-none rounded-lg text-white placeholder-green-200"
+                className="pl-10 pr-4 py-2 bg-green-400 border-none rounded-lg text-white placeholder-green-200"
               />
             </div>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg"
+              className="bg-green-400 text-white px-4 py-2 rounded-lg"
             >
               <option value="all">All Status</option>
               <option value="Pending">Pending</option>
@@ -95,7 +95,14 @@ export default function Orders() {
               <option value="Delivered">Delivered</option>
             </select>
           </div>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="btn bg-lime-400 text-white hover:bg-lime-500 px-4 py-2 font-semibold"
+            >
+              Back
+            </button>
         </div>
+
       </div>
 
       {/* Orders List */}

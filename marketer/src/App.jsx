@@ -11,6 +11,7 @@ import Wallet from "./pages/Wallet";
 import Profile from "./pages/Profile";
 import Reports from "./pages/Reports";
 import WalletPage from "./pages/Wallet";
+import AddEditStock from "./pages/AddProductModal";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
         <Route path="/wallet" element={<WalletPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/add" element={<AddEditStock/>} />
+
       </Routes>
     </BrowserRouter>
   );

@@ -1,69 +1,16 @@
 import { useState } from "react";
 import { Search, MapPin, Star, Phone, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import avo from "../assets/image/Fruits/avo.png";
-import banana from "../assets/image/Fruits/banana.png";
-import taff from "../assets/image/Grains/taff.png"
-import white from "../assets/image/Grains/white.png"
-import berbera from "../assets/image/Spices/berebera.png"
-
-
+import { products } from "../data/Products.js";
 export default function BuyFromAgents() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState("All");
 
-  // Fake data – replace with API later
-  const products = [
-    {
-      id: 1,
-      name: " Local Rice ",
-      price: 90,
-      unit: "kg",
-      qty: 800,
-      agent: "Kebed Farmer",
-      rating: 4.8,
-      distance: "42 km",
-      organic: false,
-      img: avo,
-    },
-    {
-      id: 2,
-      name: "Fresh Tomatoes",
-      price: 35,
-      unit: "kg",
-      qty: 250,
-      agent: "Feysel Farmer",
-      rating: 4.9,
-      distance: "18 km",
-      organic: true,
-      img: avo,
-    },
-    {
-      id: 3,
-      name: "Wheat ",
-      price: 22,
-      unit: "kg",
-      qty: 2000,
-      agent: "Ayana Farmer",
-      rating: 4.7,
-      distance: "89 km",
-      organic: false,
-      img: avo,
-    },
-    {
-      id: 4,
-      name: "Organic Potatoes",
-      price: 28,
-      unit: "kg",
-      qty: 500,
-      agent: "Lensa Farmer",
-      rating: 5.0,
-      distance: "35 km",
-      organic: true,
-      img: avo,
-    },
-  ];
+  const filteredProducts =
+    category === "All"
+      ? products
+      : products.filter((p) => p.category ===category);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -83,15 +30,19 @@ export default function BuyFromAgents() {
               placeholder="Search products, agents..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input input-bordered w-full pl-12 text-lg bg-lime-100"
+              className="input input-bordered w-full pl-12 text-lg text-black bg-lime-100"
             />
           </div>
-          <select className="select justify-center select-bordered w-full md:w-64 text-black bg-lime-100">
-            <option className="">All Categories</option>
-            <option>Spices</option>
-            <option>Vegetables</option>
-            <option>Grains</option>
-            <option>Fruits</option>
+          <select
+            className="select justify-center select-bordered w-full md:w-64 text-black bg-lime-100"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="All">All Categories</option>
+            <option value="Spices">Spices</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Grains">Grains</option>
+            <option value="Fruits">Fruits</option>
           </select>
           <button
             onClick={() => navigate("/dashboard")}
@@ -105,19 +56,19 @@ export default function BuyFromAgents() {
       {/* Product Grid */}
       <div className="max-w-7xl mx-auto p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((p) => (
+          { filteredProducts.map((p) => (
             <div
               key={p.id}
               className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition"
             >
               {/* Image */}
-              <img src={p.img} alt="" />
-              <div className=" bg-gray-200 border-2 border-dashed rounded-t-2xl relative">
-                <div className="absolute top-3 left-3  bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+              <img src={p.img} alt="" className="h-28 w-full" />
+              <div className=" bg-gray-200 border-2 border-dashed rounded-t-2xl relative ">
+                <div className="absolute top-3 left-3  bg-green-400 text-white px-3 py-1 rounded-full text-sm font-bold">
                   Available {p.qty} {p.unit}
                 </div>
                 {p.organic && (
-                  <div className="absolute top-3 right-3 bg-orange-600 text-white px-3 py-1 rounded-full text-sm">
+                  <div className="absolute top-3 right-3 bg-orange-400 text-white px-3 py-1 rounded-full text-sm">
                     Organic
                   </div>
                 )}
@@ -133,7 +84,7 @@ export default function BuyFromAgents() {
 
                 <div className="flex items-center justify-between mt-4">
                   <div>
-                    <p className="text-3xl font-bold text-green-700">
+                    <p className="text-3xl font-bold text-green-400">
                       {p.price}ETB
                       <span className="text-lg text-gray-500">/{p.unit}</span>
                     </p>
@@ -155,7 +106,7 @@ export default function BuyFromAgents() {
                   <button className="flex-1 btn btn-outline bg-blue-500 flex items-center gap-2">
                     <Phone size={18} /> Contact
                   </button>
-                  <button className="flex-1 btn bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
+                  <button className="flex-1 btn bg-green-400 hover:bg-green-500 text-white flex items-center gap-2">
                     <ShoppingCart size={18} /> Add to Cart
                   </button>
                 </div>

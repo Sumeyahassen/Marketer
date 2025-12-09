@@ -1,58 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Package, Edit2, Plus, Search } from "lucide-react";
+import { inventory as initialInventory } from "../data/Inventory.js"; // import the inventory
+
 
 export default function Inventory() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
-
-  // Fake data – later from API
-  const [inventory, setInventory] = useState([
-    {
-      id: 1,
-      name: "Local Rice ",
-      boughtQty: 500,
-      soldQty: 180,
-      remaining: 320,
-      unit: "kg",
-      buyPrice: 48,
-      sellPrice: 58,
-      profit: 10,
-    },
-    {
-      id: 2,
-      name: "Fresh Tomatoes",
-      boughtQty: 200,
-      soldQty: 150,
-      remaining: 50,
-      unit: "kg",
-      buyPrice: 35,
-      sellPrice: 48,
-      profit: 13,
-    },
-    {
-      id: 3,
-      name: "Wheat ",
-      boughtQty: 2000,
-      soldQty: 800,
-      remaining: 1200,
-      unit: "kg",
-      buyPrice: 22,
-      sellPrice: 28,
-      profit: 6,
-    },
-    {
-      id: 4,
-      name: "Organic Potatoes",
-      boughtQty: 300,
-      soldQty: 50,
-      remaining: 250,
-      unit: "kg",
-      buyPrice: 28,
-      sellPrice: 40,
-      profit: 12,
-    },
-  ]);
+  const [inventory, setInventory] = useState(initialInventory); // initialize state with imported data
 
   const totalStockValue = inventory.reduce(
     (sum, item) => sum + item.remaining * item.buyPrice,
@@ -62,19 +17,21 @@ export default function Inventory() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Bar */}
-      <div className="bg-green-700 text-white py-5 px-8 shadow-lg">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-3xl font-bold">My Stock ( Inventory)</h1>
-          <div className="flex gap-10">
+      <div className="bg-green-400 text-white py-5 px-4 shadow-lg fixed w-full z-50">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:justify-between gap-4 md:gap-0">
+          <h1 className="text-2xl md:text-3xl font-bold text-center md:text-left">
+            My Stock (Inventory)
+          </h1>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             <button
-              onClick={() => navigate("/dashboard")}
-              className="btn bg-green-500 btn-lg text-white flex items-center gap-2 hover:bg-green-600"
+              onClick={() => navigate("/add")}
+              className="btn bg-green-500 px-4 py-2 flex items-center justify-center gap-2 text-white hover:bg-green-600"
             >
-              <Plus size={24} /> Add New Product
+              <Plus size={20} /> Add New Product
             </button>
             <button
               onClick={() => navigate("/dashboard")}
-              className="btn bg-green-600 text-white hover:bg-green-700 w-full md:w-48 font-semibold"
+              className="btn bg-lime-400 text-white hover:bg-lime-500 px-4 py-2 font-semibold"
             >
               Back
             </button>
@@ -83,7 +40,7 @@ export default function Inventory() {
       </div>
 
       {/* Summary Cards */}
-      <div className="max-w-7xl mx-auto p-6">
+      <div className=" max-w-7xl mx-auto p-6 pt-32 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <div className="flex items-center justify-between">
@@ -118,15 +75,15 @@ export default function Inventory() {
             placeholder="Search in your stock..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="input input-bordered w-full pl-12 text-lg"
+            className="input input-bordered w-full pl-12 text-lg bg-lime-100 text-black"
           />
         </div>
 
         {/* Inventory Table */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden ">
           <div className="overflow-x-auto">
             <table className="table table-zebra w-full">
-              <thead className="bg-green-700 text-white text-lg">
+              <thead className="bg-lime-100 text-black text-lg">
                 <tr>
                   <th>Product</th>
                   <th>Bought</th>
