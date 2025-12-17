@@ -1,17 +1,75 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import ProductList from './pages/agent/ProductList';
+import AddProduct from './pages/agent/AddProduct';
+import UserList from './pages/admin/UserList';
+import TransactionList from './pages/admin/TransactionList';
+import Layout from './components/Layout/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
+import { isLoggedIn } from './utils/auth';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-   <div className="text-yellow-400">
-    hello world
-    
-   </div>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
 
-export default App
+        <Route
+          path="/*"
+          element={
+            isLoggedIn() ? (
+              <Layout>
+                <Routes>
+                  <Route path="/dashboard" element={<Dashboard />} />
+
+                  {/* Agent Routes */}
+                  <Route
+                    path="/agent/products"
+                    element={
+                      <ProtectedRoute allowedRoles={['AGENT']}>
+                        <ProductList />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/agent/add-product"
+                    element={
+                      <ProtectedRoute allowedRoles={['AGENT']}>
+                        <AddProduct />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Admin Routes */}
+                  <Route
+                    path="/admin/users"
+                    element={
+                      <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <UserList />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/transactions"
+                    element={
+                      <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <TransactionList />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  <Route path="*" element={<Navigate to="/dashboard" />} />
+                </Routes>
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
