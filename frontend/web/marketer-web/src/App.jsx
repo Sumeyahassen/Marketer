@@ -7,20 +7,28 @@ import UserList from './pages/admin/UserList';
 import TransactionList from './pages/admin/TransactionList';
 import Layout from './components/Layout/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
-import { isLoggedIn } from './utils/auth';
+import { isLoggedIn, getRole } from './utils/auth';
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        {/* Public Route - Login */}
+        <Route
+          path="/login"
+          element={
+            isLoggedIn() ? <Navigate to="/dashboard" replace /> : <Login />
+          }
+        />
 
+        {/* Protected Routes - All inside Layout */}
         <Route
           path="/*"
           element={
             isLoggedIn() ? (
               <Layout>
                 <Routes>
+                  {/* Default Dashboard */}
                   <Route path="/dashboard" element={<Dashboard />} />
 
                   {/* Agent Routes */}
@@ -59,11 +67,15 @@ const App = () => {
                     }
                   />
 
-                  <Route path="*" element={<Navigate to="/dashboard" />} />
+                  {/* Redirect root to dashboard */}
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+                  {/* Catch all unknown routes */}
+                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
               </Layout>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/login" replace />
             )
           }
         />

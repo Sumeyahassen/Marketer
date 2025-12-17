@@ -35,7 +35,7 @@ const TransactionList = () => {
         <p>No transactions recorded yet.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white shadow rounded-lg">
+          <table className="min-w-full bg-white divide-y divide-gray-200 rounded-lg shadow overflow-hidden">
             <thead className="bg-gray-200">
               <tr>
                 <th className="py-3 px-6 text-left">ID</th>
