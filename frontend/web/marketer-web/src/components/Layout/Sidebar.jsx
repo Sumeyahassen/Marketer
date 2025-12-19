@@ -11,19 +11,19 @@ import {
 const Sidebar = () => {
   const role = getRole();
 
-  const navItems = [
+  const links = [
     { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   ];
 
   if (role === 'AGENT') {
-    navItems.push(
+    links.push(
       { to: '/agent/products', label: 'My Products', icon: CubeIcon },
       { to: '/agent/add-product', label: 'Add Product', icon: PlusCircleIcon }
     );
   }
 
   if (role === 'ADMIN') {
-    navItems.push(
+    links.push(
       { to: '/admin/users', label: 'All Users', icon: UsersIcon },
       { to: '/admin/transactions', label: 'Transactions', icon: ShoppingCartIcon }
     );
@@ -31,24 +31,22 @@ const Sidebar = () => {
 
   return (
     <aside className="bg-gradient-to-b from-indigo-800 to-indigo-900 text-white w-64 min-h-screen">
-      <div className="p-6">
-        <h2 className="text-xl font-bold text-center mb-10">Marketer Pro</h2>
+      <div className="p-6 text-center">
+        <h2 className="text-2xl font-bold">Marketer Pro</h2>
       </div>
       <nav className="px-4">
-        {navItems.map((item) => (
+        {links.map((link) => (
           <NavLink
-            key={item.to}
-            to={item.to}
+            key={link.to}
+            to={link.to}
             className={({ isActive }) =>
               `flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 transition ${
-                isActive
-                  ? 'bg-white text-indigo-800 shadow-md'
-                  : 'hover:bg-indigo-700'
+                isActive ? 'bg-white text-indigo-800' : 'hover:bg-indigo-700'
               }`
             }
           >
-            <item.icon className="h-6 w-6" />
-            <span className="font-medium">{item.label}</span>
+            <link.icon className="h-6 w-6" />
+            <span>{link.label}</span>
           </NavLink>
         ))}
       </nav>

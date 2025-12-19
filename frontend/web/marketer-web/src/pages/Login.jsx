@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('AGENT'); // Default to Agent only
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,52 +17,35 @@ const Login = () => {
     setError('');
 
     try {
-      let payload, endpoint;
-
-      if (isRegister) {
-        // Only allow registering as AGENT
-        // Super Admin is created manually once
-        payload = { email, password, role: 'AGENT' }; // Force role to AGENT
-        endpoint = '/auth/register';
-      } else {
-        payload = { email, password };
-        endpoint = '/auth/login';
-      }
+      const endpoint = isRegister ? '/auth/register' : '/auth/login';
+      const payload = isRegister
+        ? { email, password, role: 'AGENT' } // Only Agent can register
+        : { email, password };
 
       const res = await api.post(endpoint, payload);
       login(res.data.token, res.data.user);
-
-      // Redirect based on role
-      if (res.data.user.role === 'ADMIN') {
-        navigate('/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Invalid email or password');
+      setError(err.response?.data?.error || 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
-          Marketer System
+    <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+      <div className="bg-white p-10 rounded-2xl shadow-2xl w-96">
+        <h2 className="text-3xl font-bold text-center mb-8 text-indigo-600">
+          {isRegister ? 'Agent Register' : 'Login'}
         </h2>
-        <h3 className="text-xl mb-6 text-center">
-          {isRegister ? 'Agent Registration' : 'Login'}
-        </h3>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            className="w-full p-4 border rounded-lg focus:outline-none focus:border-indigo-500"
           />
           <input
             type="password"
@@ -71,50 +53,31 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            className="w-full p-4 border rounded-lg focus:outline-none focus:border-indigo-500"
           />
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
+          {isRegister && (
+            <p className="text-sm text-gray-600">
+              Only Agents can register. Admin is created manually.
+            </p>
+          )}
+          {error && <p className="text-red-500 text-center">{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 disabled:opacity-50 transition"
+            className="w-full bg-indigo-600 text-white p-4 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
           >
-            {loading ? 'Please wait...' : isRegister ? 'Register as Agent' : 'Login'}
+            {loading ? 'Loading...' : isRegister ? 'Register as Agent' : 'Login'}
           </button>
         </form>
-
-        <p className="text-center mt-6 text-gray-600">
-          {isRegister ? (
-            <>
-              Already have an account?{' '}
-              <button
-                type="button"
-                onClick={() => setIsRegister(false)}
-                className="text-blue-600 hover:underline font-medium"
-              >
-                Login here
-              </button>
-            </>
-          ) : (
-            <>
-              New Agent?{' '}
-              <button
-                type="button"
-                onClick={() => setIsRegister(true)}
-                className="text-blue-600 hover:underline font-medium"
-              >
-                Register here
-              </button>
-            </>
-          )}
+        <p className="text-center mt-6">
+          <button
+            type="button"
+            onClick={() => setIsRegister(!isRegister)}
+            className="text-indigo-600 hover:underline"
+          >
+            {isRegister ? 'Have account? Login' : 'New Agent? Register'}
+          </button>
         </p>
-
-        {!isRegister && (
-          <p className="text-center mt-4 text-xs text-gray-500">
-            Super Admin: Login with pre-created credentials only
-          </p>
-        )}
       </div>
     </div>
   );
