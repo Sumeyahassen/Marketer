@@ -57,7 +57,7 @@ const Login = () => {
           />
           {isRegister && (
             <p className="text-sm text-gray-600">
-              Only Agents can register. Admin is created manually.
+              Only Agents can register. 
             </p>
           )}
           {error && <p className="text-red-500 text-center">{error}</p>}
