@@ -19,39 +19,42 @@ router.get('/', async (req, res) => {
 
 // Agent: Add product (stable, no image)
 
-router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) => {
+// Agent: Add product (no image - stable and working)
+router.post('/', authenticate, requireRole(['AGENT']), async (req, res) => {
   const { name, description, price, stock } = req.body;
-  let imageUrl = null;
 
-  if (req.file) {
-    try {
-      const result = await cloudinary.uploader.upload_stream(
-        { resource_type: 'image' },
-        (error, result) => {
-          if (error) throw error;
-          imageUrl = result.secure_url;
-        }
-      ).end(req.file.buffer);
-    } catch (err) {
-      return res.status(500).json({ error: 'Image upload failed' });
-    }
+  // Validate required fields
+  if (!name || price === undefined || stock === undefined) {
+    return res.status(400).json({ error: 'Name, price, and stock are required' });
+  }
+
+  // Convert to number safely
+  const priceNum = parseFloat(price);
+  const stockNum = parseInt(stock, 10);
+
+  if (isNaN(priceNum) || isNaN(stockNum)) {
+    return res.status(400).json({ error: 'Price and stock must be valid numbers' });
   }
 
   try {
     const product = await prisma.product.create({
       data: {
-        name,
-        description,
-        price: parseFloat(price),
-        stock: parseInt(stock),
-        imageUrl,  // ← saved here
+        name: name.trim(),
+        description: description ? description.trim() : null,
+        price: priceNum,
+        stock: stockNum,
         agentId: req.user.id,
       },
     });
-    res.json(product);
+
+    console.log('Product created:', product.id, product.name);
+    res.status(201).json(product);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to create product' });
+    console.error('Product creation failed:', err);
+    res.status(500).json({
+      error: 'Failed to create product',
+      details: err.message
+    });
   }
 });
 // Agent: Update product (only own)
