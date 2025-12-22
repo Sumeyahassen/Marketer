@@ -17,45 +17,43 @@ router.get('/', async (req, res) => {
 });
 
 // Agent: Add product (stable, no image)
-router.post('/', authenticate, requireRole(['AGENT']), async (req, res) => {
+const upload = require('../middleware/upload');
+
+router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) => {
   const { name, description, price, stock } = req.body;
+  let imageUrl = null;
 
-  // Validate required fields
-  if (!name || !price || !stock) {
-    return res.status(400).json({ error: 'Name, price, and stock are required' });
-  }
-
-  // Convert and validate numbers
-  const priceNum = parseFloat(price);
-  const stockNum = parseInt(stock, 10);
-
-  if (isNaN(priceNum) || isNaN(stockNum)) {
-    return res.status(400).json({ error: 'Price and stock must be valid numbers' });
-  }
-
-  if (priceNum <= 0 || stockNum < 0) {
-    return res.status(400).json({ error: 'Price must be positive, stock cannot be negative' });
+  if (req.file) {
+    try {
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { resource_type: 'image' },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        ).end(req.file.buffer);
+      });
+      imageUrl = result.secure_url;
+    } catch (err) {
+      return res.status(500).json({ error: 'Image upload failed' });
+    }
   }
 
   try {
     const product = await prisma.product.create({
       data: {
-        name: name.trim(),
-        description: description ? description.trim() : null,
-        price: priceNum,
-        stock: stockNum,
+        name,
+        description,
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        imageUrl,
         agentId: req.user.id,
       },
     });
-
-    console.log('Product created successfully:', product.id);
-    res.status(201).json(product);
+    res.json(product);
   } catch (err) {
-    console.error('Database error when creating product:', err);
-    res.status(500).json({
-      error: 'Failed to save product',
-      details: err.message
-    });
+    res.status(500).json({ error: 'Product creation failed' });
   }
 });
 // Agent: Update product (only own)

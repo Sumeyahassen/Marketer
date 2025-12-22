@@ -33,6 +33,7 @@ model Product {
   description String?
   price       Float
   stock       Int      @default(0)
+  imageUrl    String?
   agentId     Int
   agent       User     @relation(fields: [agentId], references: [id])
   transactions Transaction[]
