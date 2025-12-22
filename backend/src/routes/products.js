@@ -19,18 +19,17 @@ router.get('/', async (req, res) => {
 });
 
 // Agent: Add product with image
-// Agent: Add product with image
 router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) => {
   const { name, description, price, stock } = req.body;
   let imageUrl = null;
 
   if (req.file) {
     try {
-      // FIXED: Proper Promise to wait for upload
+      // CORRECT WAY: Use Promise to wait for upload completion
       imageUrl = await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
+        const stream = cloudinary.uploader.upload_stream(
           {
-            folder: 'marketer_products', // optional folder in Cloudinary
+            folder: 'marketer_products', // optional: organizes images
             resource_type: 'image',
           },
           (error, result) => {
@@ -38,18 +37,17 @@ router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) 
               console.error('Cloudinary upload error:', error);
               reject(error);
             } else {
-              console.log('Image uploaded:', result.secure_url);
               resolve(result.secure_url);
             }
           }
         );
-
-        // Send buffer to stream
-        uploadStream.end(req.file.buffer);
+        stream.end(req.file.buffer);
       });
+
+      console.log('Image uploaded successfully:', imageUrl); // Debug log
     } catch (err) {
       console.error('Image upload failed:', err);
-      return res.status(500).json({ error: 'Failed to upload image' });
+      return res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
     }
   }
 
@@ -60,14 +58,14 @@ router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) 
         description,
         price: parseFloat(price),
         stock: parseInt(stock),
-        imageUrl,
+        imageUrl, // Now correctly has the Cloudinary URL
         agentId: req.user.id,
       },
     });
 
     res.json(product);
   } catch (err) {
-    console.error('Product creation failed:', err);
+    console.error('Product creation error:', err);
     res.status(500).json({ error: 'Failed to create product' });
   }
 });
