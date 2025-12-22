@@ -19,7 +19,58 @@ router.get('/', async (req, res) => {
 });
 
 // Agent: Add product with image
-src/routes/products.js
+// Agent: Add product with image
+router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) => {
+  const { name, description, price, stock } = req.body;
+  let imageUrl = null;
+
+  if (req.file) {
+    try {
+      // FIXED: Proper Promise to wait for upload
+      imageUrl = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'marketer_products', // optional folder in Cloudinary
+            resource_type: 'image',
+          },
+          (error, result) => {
+            if (error) {
+              console.error('Cloudinary upload error:', error);
+              reject(error);
+            } else {
+              console.log('Image uploaded:', result.secure_url);
+              resolve(result.secure_url);
+            }
+          }
+        );
+
+        // Send buffer to stream
+        uploadStream.end(req.file.buffer);
+      });
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      return res.status(500).json({ error: 'Failed to upload image' });
+    }
+  }
+
+  try {
+    const product = await prisma.product.create({
+      data: {
+        name,
+        description,
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        imageUrl,
+        agentId: req.user.id,
+      },
+    });
+
+    res.json(product);
+  } catch (err) {
+    console.error('Product creation failed:', err);
+    res.status(500).json({ error: 'Failed to create product' });
+  }
+});
 
 // Agent: Update product (only own) - basic version (no image update yet)
 router.put('/:id', authenticate, requireRole(['AGENT']), async (req, res) => {
