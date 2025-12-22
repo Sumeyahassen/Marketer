@@ -18,27 +18,26 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Agent: Add product with image
 router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) => {
   const { name, description, price, stock } = req.body;
   let imageUrl = null;
 
   if (req.file) {
     try {
-      // THIS IS THE ONLY WORKING WAY with memoryStorage
-      const b64 = Buffer.from(req.file.buffer).toString("base64");
-      const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      // Convert buffer to base64 data URI (RELIABLE method)
+      const b64 = Buffer.from(req.file.buffer).toString('base64');
+      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
 
       const result = await cloudinary.uploader.upload(dataURI, {
-        folder: 'marketer_products',
+        folder: 'marketer_products', // optional
         resource_type: 'image',
       });
 
       imageUrl = result.secure_url;
-      console.log('Image uploaded:', imageUrl);
+      console.log('Image uploaded successfully:', imageUrl); // for logs
     } catch (err) {
-      console.error('Cloudinary upload failed:', err);
-      return res.status(500).json({ error: 'Failed to upload image' });
+      console.error('Cloudinary upload error:', err);
+      return res.status(500).json({ error: 'Image upload failed - check file size or format' });
     }
   }
 
@@ -56,7 +55,7 @@ router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) 
 
     res.json(product);
   } catch (err) {
-    console.error('Product creation failed:', err);
+    console.error('Product creation error:', err);
     res.status(500).json({ error: 'Failed to create product' });
   }
 });
