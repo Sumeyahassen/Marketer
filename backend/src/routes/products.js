@@ -16,33 +16,45 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Agent: Add product (no image - stable)
+// Agent: Add product (stable, no image)
 router.post('/', authenticate, requireRole(['AGENT']), async (req, res) => {
   const { name, description, price, stock } = req.body;
 
-  // Validate input
+  // Validate required fields
   if (!name || !price || !stock) {
     return res.status(400).json({ error: 'Name, price, and stock are required' });
+  }
+
+  // Convert and validate numbers
+  const priceNum = parseFloat(price);
+  const stockNum = parseInt(stock, 10);
+
+  if (isNaN(priceNum) || isNaN(stockNum)) {
+    return res.status(400).json({ error: 'Price and stock must be valid numbers' });
+  }
+
+  if (priceNum <= 0 || stockNum < 0) {
+    return res.status(400).json({ error: 'Price must be positive, stock cannot be negative' });
   }
 
   try {
     const product = await prisma.product.create({
       data: {
-        name: String(name),
-        description: description ? String(description) : null,
-        price: parseFloat(price),
-        stock: parseInt(stock, 10),
+        name: name.trim(),
+        description: description ? description.trim() : null,
+        price: priceNum,
+        stock: stockNum,
         agentId: req.user.id,
       },
     });
 
-    console.log('Product created:', product); // for Render logs
+    console.log('Product created successfully:', product.id);
     res.status(201).json(product);
   } catch (err) {
-    console.error('Product creation error:', err);
+    console.error('Database error when creating product:', err);
     res.status(500).json({
-      error: 'Failed to create product',
-      details: err.message // show error in logs/frontend
+      error: 'Failed to save product',
+      details: err.message
     });
   }
 });
