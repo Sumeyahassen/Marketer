@@ -16,40 +16,34 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Agent: Add product
-router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) => {
+// Agent: Add product (no image - stable)
+router.post('/', authenticate, requireRole(['AGENT']), async (req, res) => {
   const { name, description, price, stock } = req.body;
-  let imageUrl = null;
 
-  if (req.file) {
-    try {
-      const result = await cloudinary.uploader.upload_stream(
-        { resource_type: 'image' },
-        (error, result) => {
-          if (error) throw error;
-          imageUrl = result.secure_url;
-        }
-      ).end(req.file.buffer);
-    } catch (err) {
-      return res.status(500).json({ error: 'Image upload failed' });
-    }
+  // Validate input
+  if (!name || !price || !stock) {
+    return res.status(400).json({ error: 'Name, price, and stock are required' });
   }
 
   try {
     const product = await prisma.product.create({
       data: {
-        name,
-        description,
+        name: String(name),
+        description: description ? String(description) : null,
         price: parseFloat(price),
-        stock: parseInt(stock),
-        imageUrl,  // ← saved here
+        stock: parseInt(stock, 10),
         agentId: req.user.id,
       },
     });
-    res.json(product);
+
+    console.log('Product created:', product); // for Render logs
+    res.status(201).json(product);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to create product' });
+    console.error('Product creation error:', err);
+    res.status(500).json({
+      error: 'Failed to create product',
+      details: err.message // show error in logs/frontend
+    });
   }
 });
 // Agent: Update product (only own)
