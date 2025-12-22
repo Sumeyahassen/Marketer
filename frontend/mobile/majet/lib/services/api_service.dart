@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
   static final Dio _dio = Dio();
-  static const String baseUrl = 'http://10.0.2.2:5000'; // For Android emulator
+  static const String baseUrl = 'https://marketer-up1r.onrender.com'; 
   // For real phone, change to your PC IP: 'http://192.168.1.XXX:5000'
 
   static final storage = FlutterSecureStorage();
