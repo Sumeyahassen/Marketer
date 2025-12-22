@@ -25,29 +25,20 @@ router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) 
 
   if (req.file) {
     try {
-      // CORRECT WAY: Use Promise to wait for upload completion
-      imageUrl = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: 'marketer_products', // optional: organizes images
-            resource_type: 'image',
-          },
-          (error, result) => {
-            if (error) {
-              console.error('Cloudinary upload error:', error);
-              reject(error);
-            } else {
-              resolve(result.secure_url);
-            }
-          }
-        );
-        stream.end(req.file.buffer);
+      // THIS IS THE ONLY WORKING WAY with memoryStorage
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+
+      const result = await cloudinary.uploader.upload(dataURI, {
+        folder: 'marketer_products',
+        resource_type: 'image',
       });
 
-      console.log('Image uploaded successfully:', imageUrl); // Debug log
+      imageUrl = result.secure_url;
+      console.log('Image uploaded:', imageUrl);
     } catch (err) {
-      console.error('Image upload failed:', err);
-      return res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
+      console.error('Cloudinary upload failed:', err);
+      return res.status(500).json({ error: 'Failed to upload image' });
     }
   }
 
@@ -58,18 +49,17 @@ router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) 
         description,
         price: parseFloat(price),
         stock: parseInt(stock),
-        imageUrl, // Now correctly has the Cloudinary URL
+        imageUrl,
         agentId: req.user.id,
       },
     });
 
     res.json(product);
   } catch (err) {
-    console.error('Product creation error:', err);
+    console.error('Product creation failed:', err);
     res.status(500).json({ error: 'Failed to create product' });
   }
 });
-
 // Agent: Update product (only own) - basic version (no image update yet)
 router.put('/:id', authenticate, requireRole(['AGENT']), async (req, res) => {
   const { id } = req.params;
