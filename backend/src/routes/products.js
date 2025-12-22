@@ -3,6 +3,7 @@ const router = express.Router();
 const prisma = require('../db/prisma');
 const upload = require('../middleware/upload');
 const { authenticate, requireRole } = require('../middleware/auth');
+const cloudinary = require('cloudinary').v2; // Make sure this is imported
 
 // Get all products (anyone can view)
 router.get('/', async (req, res) => {
@@ -12,26 +13,41 @@ router.get('/', async (req, res) => {
     });
     res.json(products);
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('GET products error:', err);
+    res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
 
-// Agent: Add product
+// Agent: Add product with image
 router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) => {
   const { name, description, price, stock } = req.body;
   let imageUrl = null;
 
   if (req.file) {
     try {
-      const result = await cloudinary.uploader.upload_stream(
-        { resource_type: 'image' },
-        (error, result) => {
-          if (error) throw error;
-          imageUrl = result.secure_url;
-        }
-      ).end(req.file.buffer);
+      // CORRECT WAY: Use Promise to wait for upload completion
+      imageUrl = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'marketer_products', // optional: organizes images
+            resource_type: 'image',
+          },
+          (error, result) => {
+            if (error) {
+              console.error('Cloudinary upload error:', error);
+              reject(error);
+            } else {
+              resolve(result.secure_url);
+            }
+          }
+        );
+        stream.end(req.file.buffer);
+      });
+
+      console.log('Image uploaded successfully:', imageUrl); // Debug log
     } catch (err) {
-      return res.status(500).json({ error: 'Image upload failed' });
+      console.error('Image upload failed:', err);
+      return res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
     }
   }
 
@@ -42,17 +58,19 @@ router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) 
         description,
         price: parseFloat(price),
         stock: parseInt(stock),
-        imageUrl,  // ← saved here
+        imageUrl, // Now correctly has the Cloudinary URL
         agentId: req.user.id,
       },
     });
+
     res.json(product);
   } catch (err) {
-    console.error(err);
+    console.error('Product creation error:', err);
     res.status(500).json({ error: 'Failed to create product' });
   }
 });
-// Agent: Update product (only own)
+
+// Agent: Update product (only own) - basic version (no image update yet)
 router.put('/:id', authenticate, requireRole(['AGENT']), async (req, res) => {
   const { id } = req.params;
   try {
@@ -66,6 +84,7 @@ router.put('/:id', authenticate, requireRole(['AGENT']), async (req, res) => {
     });
     res.json(updated);
   } catch (err) {
+    console.error('Update error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -81,6 +100,7 @@ router.delete('/:id', authenticate, requireRole(['AGENT']), async (req, res) => 
     await prisma.product.delete({ where: { id: parseInt(id) } });
     res.json({ success: true });
   } catch (err) {
+    console.error('Delete error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
