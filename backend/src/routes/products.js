@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const prisma = require('../db/prisma');
 const upload = require('../middleware/upload');
+
 const { authenticate, requireRole } = require('../middleware/auth');
 
 // Get all products (anyone can view)
@@ -17,7 +18,6 @@ router.get('/', async (req, res) => {
 });
 
 // Agent: Add product (stable, no image)
-const upload = require('../middleware/upload');
 
 router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) => {
   const { name, description, price, stock } = req.body;
@@ -25,16 +25,13 @@ router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) 
 
   if (req.file) {
     try {
-      const result = await new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          { resource_type: 'image' },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        ).end(req.file.buffer);
-      });
-      imageUrl = result.secure_url;
+      const result = await cloudinary.uploader.upload_stream(
+        { resource_type: 'image' },
+        (error, result) => {
+          if (error) throw error;
+          imageUrl = result.secure_url;
+        }
+      ).end(req.file.buffer);
     } catch (err) {
       return res.status(500).json({ error: 'Image upload failed' });
     }
@@ -47,13 +44,14 @@ router.post('/', authenticate, requireRole(['AGENT']), upload, async (req, res) 
         description,
         price: parseFloat(price),
         stock: parseInt(stock),
-        imageUrl,
+        imageUrl,  // ← saved here
         agentId: req.user.id,
       },
     });
     res.json(product);
   } catch (err) {
-    res.status(500).json({ error: 'Product creation failed' });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create product' });
   }
 });
 // Agent: Update product (only own)

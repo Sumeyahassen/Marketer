@@ -26,14 +26,13 @@ enum Role {
   MARKETER
   CLIENT
 }
-
 model Product {
   id          Int      @id @default(autoincrement())
   name        String
   description String?
   price       Float
   stock       Int      @default(0)
-  imageUrl    String?
+  imageUrl    String?  // ← ADD THIS LINE
   agentId     Int
   agent       User     @relation(fields: [agentId], references: [id])
   transactions Transaction[]
