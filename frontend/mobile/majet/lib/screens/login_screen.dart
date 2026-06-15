@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? CircularProgressIndicator(color: Colors.white)
                           : Text(
                               'Login',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
                             ),
                     ),
                   ),
