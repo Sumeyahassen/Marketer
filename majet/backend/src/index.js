@@ -2,11 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { PrismaClient } = require('@prisma/client');
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
+const { protect, restrictTo } = require('./middleware/auth');
 dotenv.config();
 
 const app = express();
 const prisma = new PrismaClient();
-
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 // Middleware
 app.use(cors());
 app.use(express.json());
