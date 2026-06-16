@@ -156,7 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
                         'Register',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16,color: Colors.white),
                       ),
               ),
             ),
