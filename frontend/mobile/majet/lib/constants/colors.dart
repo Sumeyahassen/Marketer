@@ -6,5 +6,5 @@ class AppColors {
   static const background = Color(0xFFF3F4F6);
   static const card = Colors.white;
   static const textPrimary = Color(0xFF1F2937);
-  static const textSecondary = Color(0xFF6B7280);
+  static const textSecondary = Color.fromRGBO(253, 254, 255, 1);
 }
